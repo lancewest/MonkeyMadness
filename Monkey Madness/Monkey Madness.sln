@@ -9,8 +9,6 @@ Project("{B031E61D-D67F-1389-B733-6A8052C37F34}") = "Monkey Madness", "Assembly-
 EndProject
 Project("{B031E61D-D67F-1389-B733-6A8052C37F34}") = "Monkey Madness", "Assembly-UnityScript-firstpass.unityproj", "{39A468AF-2847-9DFF-05F9-889F81A6888A}"
 EndProject
-Project("{B031E61D-D67F-1389-B733-6A8052C37F34}") = "Monkey Madness", "Assembly-UnityScript.unityproj", "{CCF0A262-A96D-D71A-D729-BD3835775958}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,15 +31,11 @@ Global
 		{39A468AF-2847-9DFF-05F9-889F81A6888A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39A468AF-2847-9DFF-05F9-889F81A6888A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39A468AF-2847-9DFF-05F9-889F81A6888A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCF0A262-A96D-D71A-D729-BD3835775958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCF0A262-A96D-D71A-D729-BD3835775958}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCF0A262-A96D-D71A-D729-BD3835775958}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCF0A262-A96D-D71A-D729-BD3835775958}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																		GlobalSection(MonoDevelopProperties) = preSolution
+																																		GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

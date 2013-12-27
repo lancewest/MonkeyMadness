@@ -53,9 +53,15 @@
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\MenuManager.cs" />
      <Compile Include="Assets\Scripts\MultiplayerManager.cs" />
-     <Compile Include="Assets\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\PlayerControl\AimController.cs" />
+     <Compile Include="Assets\Scripts\PlayerControl\MonkeyAnimationController.cs" />
+     <Compile Include="Assets\Scripts\PlayerControl\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\PlayerControl\PlayerSoundManager.cs" />
+     <Compile Include="Assets\Scripts\PlayerControl\WeaponController.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
-     <Compile Include="Assets\Scripts\TestScript.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\AK47.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\Unarmed.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\Weapon.cs" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\Destroy2D\Shaders\Destroy2D_Diffuse.shader" />
      <None Include="Assets\Destroy2D\Shaders\Destroy2D_Unlit_Detail.shader" />

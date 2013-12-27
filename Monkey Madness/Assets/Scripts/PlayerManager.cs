@@ -6,14 +6,24 @@ public class PlayerManager : MonoBehaviour
 	public Transform ControllerTransform;
 	public PlayerController Controller;
 	public MPPlayer MyPlayer;
+	public Transform weaponArm;
 
 	public Vector3 CurrentPosition;
+	public Vector3 CurrentVelocity;
 	public float localScaleX;
+	public int state;
+	public float armRotation = 0.0;
 	
+	public float smoothTime = 0.1f;
+	private float smoothYVelocity = 0.0f;
+	private float smoothXVelocity = 0.0f;
+
+
+
 	void Start () 
 	{
 		//ControllerTransform.gameObject.SetActive(false);
-		//MyPlayer.playerManager = this;
+		MyPlayer.playerManager = this;
 	}
 
 	void FixedUpdate() 
@@ -23,11 +33,20 @@ public class PlayerManager : MonoBehaviour
 		{
 			CurrentPosition = ControllerTransform.position;
 			localScaleX = ControllerTransform.localScale.x;
+			state = Controller.state;
 		}
 		else
 		{
-			ControllerTransform.position = CurrentPosition;
-			ControllerTransform.localScale.Set(localScaleX,1,1);
+			Controller.state = state;
+
+			if(localScaleX != ControllerTransform.localScale.x)
+				Controller.Flip();
+
+			Vector3 newPosition = new Vector3( Mathf.SmoothDamp(ControllerTransform.position.x, CurrentPosition.x, ref smoothXVelocity, smoothTime),
+			                                   Mathf.SmoothDamp(ControllerTransform.position.y, CurrentPosition.y, ref smoothYVelocity, smoothTime),
+			                                   CurrentPosition.z
+			                                  );
+			ControllerTransform.position = newPosition;
 		}
 	}
 
@@ -36,12 +55,16 @@ public class PlayerManager : MonoBehaviour
 		if (stream.isWriting) 
 		{
 			stream.Serialize(ref CurrentPosition);
-			stream.Serialize(ref CurrentPosition);
+			//stream.Serialize(ref CurrentVelocity);
+			stream.Serialize(ref localScaleX);
+			stream.Serialize(ref state);
 		} 
 		else 
 		{
 			stream.Serialize(ref CurrentPosition);
+			//stream.Serialize(ref CurrentVelocity);
 			stream.Serialize(ref localScaleX);
+			stream.Serialize(ref state);
 		}	
 	}
 

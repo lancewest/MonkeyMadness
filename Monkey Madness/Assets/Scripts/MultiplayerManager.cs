@@ -147,8 +147,8 @@ public class MultiplayerManager : MonoBehaviour
 		Network.SetSendingEnabled(0, true);
 	}
 
-	[RPC]
-	void Server_SpawnPlayer(NetworkPlayer thisPlayer)
+
+	void SpawnPlayer(NetworkPlayer thisPlayer)
 	{
 		int spawnpointNumber = Random.Range(0, SpawnPoints.Count - 1);
 		Network.Instantiate(playerPrefab, SpawnPoints[spawnpointNumber].transform.position, Quaternion.identity, 0);
@@ -188,7 +188,7 @@ public class MultiplayerManager : MonoBehaviour
 		if(GUI.Button( new Rect(Screen.width/2 - 150, Screen.height/2 - 25, 300, 50), "Respawn"))
 		{
 			//networkView.RPC("Server_SpawnPlayer", RPCMode.Server, Network.player);
-			Server_SpawnPlayer(Network.player);
+			SpawnPlayer(Network.player);
 		}
 	}
 
