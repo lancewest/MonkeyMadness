@@ -32,11 +32,11 @@ public class PlayerController : MonoBehaviour
 	
 	void Awake()
 	{
-		/*if(!transform.parent.networkView.isMine)
+		if(!transform.parent.networkView.isMine && (Network.isClient || Network.isServer))
 		{
 			Destroy(GetComponent<Rigidbody2D>());
 			GetComponent<BoxCollider2D>().isTrigger = true;
-		}*/
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)
@@ -95,8 +95,8 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
 	{
-		//if(!transform.parent.networkView.isMine)  //Only uncomment if your doing a full Network Test
-		//	return;
+		if(!transform.parent.networkView.isMine && (Network.isClient || Network.isServer))
+			return;
 
 		CheckForFallingAndGrounded();
 		ApplyMovement();

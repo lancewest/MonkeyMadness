@@ -15,25 +15,58 @@ public class AK47 : Weapon
 	public WeaponController weaponController;
 	public PlayerSoundManager soundManager;
 	
-	public int ammo = 0;
+	public int extraAmmo = 0;
+	public int loadedAmmo = 0;
+
+	public bool fireHeldDown = false;
+	public bool playNoAmmoSoundAtEndOfMagazine = true;
+
+	public Vector2 magazineLocation = new Vector2(-4.2723f, -2.5983f);
 
 
 	public AK47(WeaponController wc, PlayerSoundManager sm)
 	{
 		weaponController = wc;
 		soundManager = sm;
+
+		extraAmmo = 1000;
+		loadedAmmo = 30;
 	}
 
 
 	public void fire()
 	{
-		if(ammo <= 0)
+		if(loadedAmmo <= 0)
+		{
+			if(!fireHeldDown || playNoAmmoSoundAtEndOfMagazine)
+			{
+				soundManager.playNoAmmo();
+				playNoAmmoSoundAtEndOfMagazine = false;
+			}
 			return;
+		}
 
 		soundManager.playAKFire();
-		ammo--;
+		loadedAmmo--;
+		playNoAmmoSoundAtEndOfMagazine = true;
 		weaponController.fire(recoilTime);
 		weaponController.recoil(upwardAngleDrift);
+	}
+
+	public void reload()
+	{
+		if(loadedAmmo >= magazineCapacity || extraAmmo <= 0)
+			return;
+		else if(extraAmmo + loadedAmmo <= magazineCapacity)
+		{
+			loadedAmmo += extraAmmo;
+			extraAmmo = 0;
+		}
+		else
+		{
+			extraAmmo -= magazineCapacity - loadedAmmo;
+			loadedAmmo = magazineCapacity;
+		}
 	}
 	
 
@@ -77,15 +110,55 @@ public class AK47 : Weapon
 		return showCrosshair;
 	}
 
-	
-	public int getAmmo()
+	public string getWeaponName()
 	{
-		return ammo;
+		return "AK47";
 	}
 
-	public void changeAmmo(int change)
+	public string getFireMode()
 	{
-		ammo += change;
+		return "Auto";
+	}
+
+	public void setFireHeldDown(bool newFireHeldDown)
+	{
+		fireHeldDown = newFireHeldDown;
+	}
+
+	public Vector2 getMagazineLocation()
+	{
+		return magazineLocation;
+	}
+
+	public float getReloadTime()
+	{
+		return 1.0f;
+	}
+
+	public bool canReload()
+	{
+		return !(loadedAmmo >= magazineCapacity || extraAmmo <= 0);
+	}
+
+	public bool hasMagazine()
+	{
+		return true;
+	}
+
+	
+	public int getExtraAmmo()
+	{
+		return extraAmmo;
+	}
+
+	public int getLoadedAmmo()
+	{
+		return loadedAmmo;
+	}
+
+	public void changeExtraAmmo(int change)
+	{
+		extraAmmo += change;
 	}
 
 }

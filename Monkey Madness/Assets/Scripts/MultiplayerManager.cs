@@ -209,8 +209,21 @@ public class MultiplayerManager : MonoBehaviour
 
 	public void startGame()
 	{
+		numberPlayers();
 		networkView.RPC("Client_LoadMultiplayerMap", RPCMode.All, CurrentMap.MapLoadName, lastPrefix+1);
 		lastPrefix++;
+	}
+
+	public void numberPlayers()
+	{
+		MyPlayer.playerNumber = 1;
+
+		int counter = 2;
+		foreach(MPPlayer player in PlayerList)
+		{
+			player.playerNumber = counter;
+			counter++;
+		}
 	}
 
 }
@@ -219,6 +232,7 @@ public class MultiplayerManager : MonoBehaviour
 public class MPPlayer
 {
 	public string PlayerName = "";
+	public int playerNumber;
 	public NetworkPlayer PlayerNetwork;
 	public PlayerManager playerManager;
 	public bool isAlive;

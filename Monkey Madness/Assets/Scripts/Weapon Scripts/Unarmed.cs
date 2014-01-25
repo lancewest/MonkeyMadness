@@ -12,12 +12,20 @@ public class Unarmed : Weapon
 	public readonly int range;
 	public readonly int damageFadeFactor;
 	
-	public int ammo = 0;
-	
+	public int extraAmmo = 0;
+	public int loadedAmmo = 0;
+
+	public bool fireDown = false;
+
 	
 	public void fire()
 	{
 		//Debug.Log ("Hit!");
+	}
+
+	public void reload()
+	{
+		
 	}
 	
 	
@@ -60,16 +68,57 @@ public class Unarmed : Weapon
 	{
 		return showCrosshair;
 	}
-	
-	
-	public int getAmmo()
+
+	public string getWeaponName()
 	{
-		return ammo;
+		return "Unarmed";
+	}
+
+	public string getFireMode()
+	{
+		return "Semi";
+	}
+
+	public void setFireHeldDown(bool newFireDown)
+	{
+		fireDown = newFireDown;
+	}
+
+	public Vector2 getMagazineLocation()
+	{
+		return new Vector2(0.0f,0.0f);
+	}
+
+	public float getReloadTime()
+	{
+		return 1.0f;
+	}
+
+	public bool canReload()
+	{
+		return !(loadedAmmo >= magazineCapacity || extraAmmo <= 0);
+	}
+
+	public bool hasMagazine()
+	{
+		return true;
+	}
+
+	
+
+	public int getExtraAmmo()
+	{
+		return extraAmmo;
 	}
 	
-	public void changeAmmo(int change)
+	public int getLoadedAmmo()
 	{
-		ammo += change;
+		return loadedAmmo;
+	}
+	
+	public void changeExtraAmmo(int change)
+	{
+		extraAmmo += change;
 	}
 	
 }

@@ -9,10 +9,10 @@ public class PlayerManager : MonoBehaviour
 	public Transform weaponArm;
 
 	public Vector3 CurrentPosition;
-	public Vector3 CurrentVelocity;
+	public Quaternion CurrentAimAngle;
 	public float localScaleX;
 	public int state;
-	public float armRotation = 0.0;
+	public float armRotation = 0.0f;
 	
 	public float smoothTime = 0.1f;
 	private float smoothYVelocity = 0.0f;
@@ -24,29 +24,39 @@ public class PlayerManager : MonoBehaviour
 	{
 		//ControllerTransform.gameObject.SetActive(false);
 		MyPlayer.playerManager = this;
+
+		if(!networkView.isMine)
+			changePlayerRenderLayer(MyPlayer.playerNumber);
+
 	}
 
 	void FixedUpdate() 
 	{
-		if(false)
-		if(networkView.isMine)
+		if(Network.isServer || Network.isClient)
 		{
-			CurrentPosition = ControllerTransform.position;
-			localScaleX = ControllerTransform.localScale.x;
-			state = Controller.state;
-		}
-		else
-		{
-			Controller.state = state;
+			if(networkView.isMine)
+			{
+				CurrentPosition = ControllerTransform.position;
+				localScaleX = ControllerTransform.localScale.x;
+				state = Controller.state;
+				CurrentAimAngle = weaponArm.rotation;
+			}
+			else
+			{
 
-			if(localScaleX != ControllerTransform.localScale.x)
-				Controller.Flip();
+				Controller.state = state;
 
-			Vector3 newPosition = new Vector3( Mathf.SmoothDamp(ControllerTransform.position.x, CurrentPosition.x, ref smoothXVelocity, smoothTime),
-			                                   Mathf.SmoothDamp(ControllerTransform.position.y, CurrentPosition.y, ref smoothYVelocity, smoothTime),
-			                                   CurrentPosition.z
-			                                  );
-			ControllerTransform.position = newPosition;
+				if(localScaleX != ControllerTransform.localScale.x)
+					Controller.Flip();
+
+				Vector3 newPosition = new Vector3( Mathf.SmoothDamp(ControllerTransform.position.x, CurrentPosition.x, ref smoothXVelocity, smoothTime),
+				                                   Mathf.SmoothDamp(ControllerTransform.position.y, CurrentPosition.y, ref smoothYVelocity, smoothTime),
+				                                   CurrentPosition.z
+				                                  );
+				ControllerTransform.position = newPosition;
+
+				weaponArm.rotation = CurrentAimAngle;
+			}
 		}
 	}
 
@@ -55,14 +65,14 @@ public class PlayerManager : MonoBehaviour
 		if (stream.isWriting) 
 		{
 			stream.Serialize(ref CurrentPosition);
-			//stream.Serialize(ref CurrentVelocity);
+			stream.Serialize(ref CurrentAimAngle);
 			stream.Serialize(ref localScaleX);
 			stream.Serialize(ref state);
 		} 
 		else 
 		{
 			stream.Serialize(ref CurrentPosition);
-			//stream.Serialize(ref CurrentVelocity);
+			stream.Serialize(ref CurrentAimAngle);
 			stream.Serialize(ref localScaleX);
 			stream.Serialize(ref state);
 		}	
@@ -109,5 +119,13 @@ public class PlayerManager : MonoBehaviour
 	public void SetMyPlayer(MPPlayer myNewPlayer)
 	{
 		MyPlayer = myNewPlayer;
+	}
+
+	public void changePlayerRenderLayer(int newLayer)
+	{
+		foreach(SpriteRenderer renderer in gameObject.GetComponentsInChildren<SpriteRenderer>())
+		{
+			renderer.sortingLayerName = "Player" + newLayer;
+		}
 	}
 }

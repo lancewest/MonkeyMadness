@@ -3,6 +3,8 @@ using System.Collections;
 
 public class AimController : MonoBehaviour 
 {
+	public WeaponController weaponController;
+
 	public float aimAngle = 0.0f;
 
 	public Transform crosshair;
@@ -15,9 +17,21 @@ public class AimController : MonoBehaviour
 	public float maxDownAngle = 80.0f;
 	public float crosshairDistance = 3.0f;
 
+	public bool levelingOutGun = false;
+	public bool resumeingAimAngle = false;
+	public float aimAngleBeforeReload = 0.0f;
+
 	void Update () 
 	{
-		aim();
+		if(!transform.parent.networkView.isMine && (Network.isClient || Network.isServer))
+			return;
+
+		if(levelingOutGun)
+			levelOutGunForReload();
+		else if(resumeingAimAngle)
+			resumeAimAngleAfterReload();
+		else
+			aim();
 	}
 
 
@@ -32,6 +46,8 @@ public class AimController : MonoBehaviour
 			weaponArm.transform.Rotate( new Vector3(0.0f, 0.0f, -Input.GetAxis("Vertical") * fineRotateSpeed * Time.deltaTime));
 		else
 			weaponArm.transform.Rotate( new Vector3(0.0f, 0.0f, -Input.GetAxis("Vertical") * rotateSpeed * Time.deltaTime));
+
+		aimAngle = weaponArm.transform.rotation.eulerAngles.z;
 	}
 
 	public void recoil(float recoildAngle)
@@ -40,5 +56,52 @@ public class AimController : MonoBehaviour
 
 		if(angle > 360-maxUpAngle || angle < 180)
 			weaponArm.transform.Rotate( new Vector3(0.0f, 0.0f, -recoildAngle));
+	}
+
+	public void resetRotation()
+	{
+		weaponArm.transform.rotation = Quaternion.identity;
+	}
+
+	public void resetSize()
+	{
+		weaponArm.transform.localScale.Set(1.0f,1.0f,1.0f);
+	}
+
+
+	public void startLevelingGun()
+	{
+		aimAngleBeforeReload = aimAngle;
+		levelingOutGun = true;
+	}
+
+	public void levelOutGunForReload()
+	{
+		float directionModifier = -1.0f;
+		if(aimAngleBeforeReload > 200)
+			directionModifier = 1.0f;
+
+		weaponArm.transform.Rotate( new Vector3(0.0f, 0.0f, directionModifier * 2.5f * rotateSpeed * Time.deltaTime));
+
+		if(Mathf.Abs(weaponArm.transform.rotation.eulerAngles.z) < 10)
+		{
+			levelingOutGun = false;
+			weaponController.beginReloadAnimation();
+		}
+	}
+
+	public void resumeAimAngleAfterReload()
+	{
+		float directionModifier = 1.0f;
+		if(aimAngleBeforeReload > 200)
+			directionModifier = -1.0f;
+
+		weaponArm.transform.Rotate( new Vector3(0.0f, 0.0f, directionModifier * 2.5f * rotateSpeed * Time.deltaTime));
+
+		if(Mathf.Abs(weaponArm.transform.eulerAngles.z - aimAngleBeforeReload) < 10)
+		{
+			resumeingAimAngle = false;
+			weaponController.doneReloading();
+		}
 	}
 }
